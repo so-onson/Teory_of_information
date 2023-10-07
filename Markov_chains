@@ -1,6 +1,5 @@
 import random
 
-# Ваш текст для анализа
 with open("./text.txt", encoding='utf-8') as file:
     text = file.read()
     
@@ -12,12 +11,11 @@ with open("./text.txt", encoding='utf-8') as file:
     text = text.replace('\n', '')
 
     text = text.lower()
-#text = "Ваш текст для анализа здесь"
 
-# Создайте словарь для подсчета частоты каждой буквы
+# Словарь для подсчета частоты каждой буквы
 letter_frequency = {char: 0 for char in set(text)}
 
-# Подсчитайте частоту каждой буквы в тексте
+# Подсчет частоты каждой буквы в тексте
 for char in text:
     if char in letter_frequency:
         letter_frequency[char] += 1
@@ -25,7 +23,7 @@ for char in text:
         
 print("Частота букв в тексте:")
 sorted_letters = sorted(letter_frequency.items(), key=lambda item: item[1])
-#print(sorted_letters)
+print(sorted_letters)
 
 # Общее количество символов в тексте (буквы + пробел)
 total_characters = len(text)
@@ -38,7 +36,7 @@ zero_order_probabilities = {char: 1/len(letter_frequency) for char in letter_fre
 first_order_probabilities = {char: count/total_characters for char, count in letter_frequency.items()}
 print("first_order_probabilities:")
 sorted_first_o_p = sorted(first_order_probabilities.items(), key=lambda item: item[1])
-#print(sorted_first_o_p)
+print(sorted_first_o_p)
 
 # Второе приближение: частота пар букв
 pair_frequency = {}
