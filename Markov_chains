@@ -1,0 +1,77 @@
+import random
+
+# Ваш текст для анализа
+with open("./text.txt", encoding='utf-8') as file:
+    text = file.read()
+    
+    for c in '.,:!?()«»—“”];[1-…':
+        text = text.replace(c, '')
+
+    text = text.replace('\'', '')
+    text = text.replace('\"', '')
+    text = text.replace('\n', '')
+
+    text = text.lower()
+#text = "Ваш текст для анализа здесь"
+
+# Создайте словарь для подсчета частоты каждой буквы
+letter_frequency = {char: 0 for char in set(text)}
+
+# Подсчитайте частоту каждой буквы в тексте
+for char in text:
+    if char in letter_frequency:
+        letter_frequency[char] += 1
+        #print(letter_frequency[char])
+        
+print("Частота букв в тексте:")
+sorted_letters = sorted(letter_frequency.items(), key=lambda item: item[1])
+#print(sorted_letters)
+
+# Общее количество символов в тексте (буквы + пробел)
+total_characters = len(text)
+
+# Нулевое приближение: вероятность каждого символа одинакова
+zero_order_probabilities = {char: 1/len(letter_frequency) for char in letter_frequency}
+#print("zero_order_probabilities:", 1/len(letter_frequency))
+
+# Первое приближение: частота букв в тексте
+first_order_probabilities = {char: count/total_characters for char, count in letter_frequency.items()}
+print("first_order_probabilities:")
+sorted_first_o_p = sorted(first_order_probabilities.items(), key=lambda item: item[1])
+#print(sorted_first_o_p)
+
+# Второе приближение: частота пар букв
+pair_frequency = {}
+for i in range(len(text) - 1):
+    pair = text[i:i+2]
+    if pair in pair_frequency:
+        pair_frequency[pair] += 1
+    else:
+        pair_frequency[pair] = 1
+
+second_order_probabilities = {pair: count/total_characters for pair, count in pair_frequency.items()}
+print("second_order_probabilities:")
+sorted_first_o_p = sorted(pair_frequency.items(), key=lambda item: item[1])
+print(sorted_first_o_p)
+
+# Генерация последовательности символов для каждого приближения
+sequence_zero_order = ''.join(random.choices(list(letter_frequency.keys()), k=30))
+sequence_first_order = ''.join(random.choices(list(letter_frequency.keys()), weights=list(letter_frequency.values()), k=30))
+sequence_second_order = ''
+for _ in range(30):
+    last_char = sequence_second_order[-1] if sequence_second_order else random.choice(list(letter_frequency.keys()))
+    possible_pairs = [pair for pair in pair_frequency.keys() if pair[0] == last_char]
+    if not possible_pairs:
+        sequence_second_order += random.choice(list(letter_frequency.keys()))
+    else:
+        pair_probabilities = [second_order_probabilities[pair] for pair in possible_pairs]
+        next_pair = random.choices(possible_pairs, weights=pair_probabilities)[0]
+        sequence_second_order += next_pair[1]
+
+# Вывод результатов
+print("\nНулевое приближение:")
+print(sequence_zero_order)
+print("\nПервое приближение:")
+print(sequence_first_order)
+print("\nВторое приближение:")
+print(sequence_second_order)
